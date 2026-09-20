@@ -1,0 +1,66 @@
+# MaoMaoNotify — dev stack. See .env.example for configuration.
+# Edge TTS is the default provider and needs no container.
+# piper / kokoro are optional local TTS providers (profile: tts).
+
+services:
+  server:
+    build: ./server
+    env_file: .env
+    ports:
+      - "8287:8000"
+    depends_on:
+      - postgres
+      - redis
+      - minio
+    volumes:
+      - ./server:/app
+      - ./web:/web
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-data:/data
+
+  # --- Optional local TTS providers ---
+  piper:
+    profiles: ["tts"]
+    build: ./docker/piper
+    ports:
+      - "10200:10200"
+
+  kokoro:
+    profiles: ["tts"]
+    build: ./docker/kokoro
+    ports:
+      - "8880:8880"
+
+volumes:
+  postgres-data:
+  redis-data:
+  minio-data:

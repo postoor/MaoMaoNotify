@@ -1,0 +1,26 @@
+# Production image for the MaoMaoNotify server. Build from the REPO ROOT so the
+# web admin can be baked in:
+#   docker build -f docker/Dockerfile.prod -t maomao-server:prod .
+FROM python:3.13-slim
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+WORKDIR /app
+
+# Dependencies first (cached): lockfile-pinned, no dev deps.
+COPY server/pyproject.toml server/uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
+
+# Application code + the static web admin.
+COPY server/ /app/
+COPY web/ /srv/web/
+RUN uv sync --frozen --no-dev
+
+ENV PATH="/app/.venv/bin:$PATH" \
+    WEB_ADMIN_DIR=/srv/web \
+    PYTHONUNBUFFERED=1
+
+EXPOSE 8000
+
+# Run migrations, then serve (no --reload in production).
+CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]

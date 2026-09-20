@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Long+Cang&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #c07b1e; } a:hover { color: #965d12; }
+    .paper {
+      font-family: 'Kalam', 'Long Cang', 'Comic Sans MS', cursive;
+      color: #262421;
+      background-color: #F4EFE3;
+      background-image: radial-gradient(rgba(38,36,33,.07) 1.2px, transparent 1.2px);
+      background-size: 22px 22px;
+    }
+    /* wobbly hand-drawn boxes */
+    .sk { border: 2.5px solid #262421; background: #FDFBF3;
+      border-radius: 235px 18px 225px 20px / 20px 215px 22px 235px; }
+    .sk2 { border-radius: 18px 230px 22px 220px / 220px 20px 235px 18px; }
+    .tile { border: 3px solid #262421; }
+    .tag { border: 2px solid #262421; border-radius: 40px 12px 38px 12px/12px 36px 12px 40px;
+      padding: 2px 12px; font-size: 15px; background:#FDFBF3; }
+  </style>
+</helmet>
+
+<!-- rough-edge filter for the illustrations -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="rough"><feTurbulence type="turbulence" baseFrequency="0.018" numOctaves="2" seed="7" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter>
+</defs></svg>
+
+<div class="paper" style="width:720px; box-sizing:border-box; padding:34px 38px;">
+  <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+    <div style="font-weight:700; font-size:34px;">App Icon</div>
+    <div style="font-size:19px; color:#7a746a;">潦草手繪 · MaoMaoNotify 🐾</div>
+  </div>
+  <div style="font-size:17px; color:#7a746a; margin-bottom:24px;">黑貓 · 琥珀眼 · 手寫墨線</div>
+
+  <div style="display:flex; gap:40px; align-items:flex-start;">
+    <!-- big light tile -->
+    <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+      <div class="tile" style="width:200px; height:200px; background:#FDFBF3; display:flex; align-items:center; justify-content:center; border-radius:44px; transform:rotate(-1deg);">
+        <svg viewBox="0 0 120 120" width="150" height="150" filter="url(#rough)">
+          <g>
+            <path d="M33 46 L35 13 L60 39 Z" fill="#1C1B1A"/>
+            <path d="M87 46 L85 13 L60 39 Z" fill="#1C1B1A"/>
+            <path d="M40 40 L41 23 L53 37 Z" fill="#B98A86"/>
+            <path d="M80 40 L79 23 L67 37 Z" fill="#B98A86"/>
+            <path d="M60 30 C40 30 23 41 23 63 C23 89 39 107 60 107 C81 107 97 89 97 63 C97 41 80 30 60 30 Z" fill="#1C1B1A"/>
+            <g fill="none" stroke="#3a3733" stroke-width="1.6" stroke-linecap="round">
+              <path d="M42 74 L12 70"/><path d="M42 80 L13 83"/><path d="M43 86 L17 95"/>
+              <path d="M78 74 L108 70"/><path d="M78 80 L107 83"/><path d="M77 86 L103 95"/>
+            </g>
+            <ellipse cx="46" cy="64" rx="11" ry="13" fill="#E3A02E"/>
+            <ellipse cx="74" cy="64" rx="11" ry="13" fill="#E3A02E"/>
+            <circle cx="46" cy="65.5" r="6.6" fill="#141312"/>
+            <circle cx="74" cy="65.5" r="6.6" fill="#141312"/>
+            <circle cx="43.4" cy="61" r="2.3" fill="#FFFDF7"/>
+            <circle cx="71.4" cy="61" r="2.3" fill="#FFFDF7"/>
+            <path d="M55 82 L65 82 L60 88 Z" fill="#B98A86"/>
+            <path d="M60 88 L60 92 M60 92 C56 96 51 95 49 92 M60 92 C64 96 69 95 71 92" fill="none" stroke="#2b2723" stroke-width="1.8" stroke-linecap="round"/>
+          </g>
+        </svg>
+      </div>
+      <div style="font-size:16px; color:#7a746a;">light · 200px</div>
+    </div>
+
+    <!-- dark tile -->
+    <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+      <div class="tile" style="width:200px; height:200px; background:#211F1C; display:flex; align-items:center; justify-content:center; border-radius:44px; transform:rotate(1.2deg);">
+        <svg viewBox="0 0 120 120" width="150" height="150" filter="url(#rough)">
+          <g>
+            <path d="M33 46 L35 13 L60 39 Z" fill="#0E0D0C" stroke="#F1EADA" stroke-width="1.6"/>
+            <path d="M87 46 L85 13 L60 39 Z" fill="#0E0D0C" stroke="#F1EADA" stroke-width="1.6"/>
+            <path d="M60 30 C40 30 23 41 23 63 C23 89 39 107 60 107 C81 107 97 89 97 63 C97 41 80 30 60 30 Z" fill="#0E0D0C" stroke="#F1EADA" stroke-width="1.8"/>
+            <g fill="none" stroke="#C9C1B0" stroke-width="1.6" stroke-linecap="round">
+              <path d="M42 74 L12 70"/><path d="M42 80 L13 83"/><path d="M78 74 L108 70"/><path d="M78 80 L107 83"/>
+            </g>
+            <ellipse cx="46" cy="64" rx="11" ry="13" fill="#E9A733"/>
+            <ellipse cx="74" cy="64" rx="11" ry="13" fill="#E9A733"/>
+            <circle cx="46" cy="65.5" r="6.6" fill="#141312"/>
+            <circle cx="74" cy="65.5" r="6.6" fill="#141312"/>
+            <circle cx="43.4" cy="61" r="2.3" fill="#FFFDF7"/>
+            <circle cx="71.4" cy="61" r="2.3" fill="#FFFDF7"/>
+            <path d="M55 82 L65 82 L60 88 Z" fill="#C98B86"/>
+          </g>
+        </svg>
+      </div>
+      <div style="font-size:16px; color:#7a746a;">dark · 200px</div>
+    </div>
+
+    <!-- small sizes + line variant -->
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div style="display:flex; align-items:flex-end; gap:18px;">
+        <div class="tile" style="width:76px;height:76px;background:#FDFBF3;border-radius:18px;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 120 120" width="58" height="58" filter="url(#rough)">
+            <path d="M33 46 L35 13 L60 39 Z" fill="#1C1B1A"/><path d="M87 46 L85 13 L60 39 Z" fill="#1C1B1A"/>
+            <path d="M60 30 C40 30 23 41 23 63 C23 89 39 107 60 107 C81 107 97 89 97 63 C97 41 80 30 60 30 Z" fill="#1C1B1A"/>
+            <ellipse cx="46" cy="64" rx="11" ry="13" fill="#E3A02E"/><ellipse cx="74" cy="64" rx="11" ry="13" fill="#E3A02E"/>
+            <circle cx="46" cy="65.5" r="6.6" fill="#141312"/><circle cx="74" cy="65.5" r="6.6" fill="#141312"/>
+          </svg>
+        </div>
+        <div class="tile" style="width:48px;height:48px;background:#FDFBF3;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 120 120" width="38" height="38">
+            <path d="M33 46 L35 13 L60 39 Z" fill="#1C1B1A"/><path d="M87 46 L85 13 L60 39 Z" fill="#1C1B1A"/>
+            <path d="M60 30 C40 30 23 41 23 63 C23 89 39 107 60 107 C81 107 97 89 97 63 C97 41 80 30 60 30 Z" fill="#1C1B1A"/>
+            <ellipse cx="46" cy="64" rx="10" ry="12" fill="#E3A02E"/><ellipse cx="74" cy="64" rx="10" ry="12" fill="#E3A02E"/>
+            <circle cx="46" cy="65.5" r="6" fill="#141312"/><circle cx="74" cy="65.5" r="6" fill="#141312"/>
+          </svg>
+        </div>
+        <div style="font-size:15px;color:#7a746a;padding-bottom:14px;">76 · 48</div>
+      </div>
+
+      <!-- monoline variant -->
+      <div class="sk" style="padding:16px 18px; transform:rotate(-0.6deg); max-width:250px;">
+        <div style="font-size:15px; color:#7a746a; margin-bottom:8px;">monoline / stamp</div>
+        <svg viewBox="0 0 120 120" width="80" height="80" filter="url(#rough)">
+          <g fill="none" stroke="#262421" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M33 46 L35 15 L58 38"/><path d="M87 46 L85 15 L62 38"/>
+            <path d="M60 32 C41 32 25 42 25 63 C25 88 40 105 60 105 C80 105 95 88 95 63 C95 42 79 32 60 32 Z"/>
+            <path d="M42 62 q4 -6 8 0" /><path d="M70 62 q4 -6 8 0"/>
+            <path d="M56 80 L64 80 L60 85 Z" fill="#262421"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:14px; margin-top:30px;">
+    <div style="font-weight:700; font-size:30px;">MaoMaoNotify</div>
+    <div class="tag">🐾 喵一聲就到</div>
+  </div>
+  <div style="font-size:16px; color:#7a746a; margin-top:4px;">墨色 #262421 · 紙 #F4EFE3 · 琥珀 #E3A02E（貓眼）</div>
+</div>
+</x-dc>
+</body>
+</html>

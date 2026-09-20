@@ -1,0 +1,44 @@
+# Secrets / config
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.uv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Flutter / Dart
+client/.dart_tool/
+client/build/
+client/.flutter-plugins
+client/.flutter-plugins-dependencies
+client/pubspec.lock
+
+# Node / web
+web/node_modules/
+web/dist/
+web/.next/
+
+# Build artifacts / release signing
+dist/
+client/android/key.properties
+client/android/app/*.jks
+
+# Data / volumes
+postgres-data/
+redis-data/
+minio-data/
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+
+.agents/
+.claude/

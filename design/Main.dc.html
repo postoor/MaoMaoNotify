@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Long+Cang&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #c07b1e; } a:hover { color: #965d12; }
+    .paper { font-family: 'Kalam','Long Cang','Comic Sans MS',cursive; color:#262421;
+      background-color:#F4EFE3;
+      background-image: radial-gradient(rgba(38,36,33,.07) 1.2px, transparent 1.2px);
+      background-size: 20px 20px; }
+    .card { border:2.5px solid #262421; background:#FDFBF3;
+      border-radius: 230px 16px 220px 18px / 18px 210px 20px 232px; padding:14px 16px; }
+    .card.b { border-radius: 16px 226px 18px 220px / 220px 18px 230px 16px; }
+    .tag { border:2px solid #262421; border-radius:30px 10px 28px 10px/10px 26px 10px 30px;
+      padding:1px 10px; font-size:14px; background:#FDFBF3; }
+    .btn { border:2.5px solid #262421; border-radius:30px 12px 26px 12px/12px 24px 12px 30px;
+      padding:8px 20px; font-size:18px; font-weight:700; background:#FDFBF3; cursor:pointer; }
+    .btn.amber { background:#E9B24A; }
+    .knob { width:26px;height:26px;border-radius:50%;border:2.5px solid #262421;background:#FDFBF3; }
+  </style>
+</helmet>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="rough"><feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="2" seed="4" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2"/></filter>
+</defs></svg>
+
+<div class="paper" style="width:390px; height:844px; box-sizing:border-box; padding:20px 18px; display:flex; flex-direction:column; gap:14px; overflow:hidden;">
+
+  <!-- header -->
+  <div style="display:flex; align-items:center; gap:10px;">
+    <svg viewBox="0 0 120 120" width="34" height="34" filter="url(#rough)">
+      <path d="M33 46 L35 15 L60 39 Z" fill="#1C1B1A"/><path d="M87 46 L85 15 L60 39 Z" fill="#1C1B1A"/>
+      <path d="M60 32 C41 32 25 42 25 63 C25 88 40 105 60 105 C80 105 95 88 95 63 C95 42 79 32 60 32 Z" fill="#1C1B1A"/>
+      <ellipse cx="46" cy="64" rx="10" ry="12" fill="#E3A02E"/><ellipse cx="74" cy="64" rx="10" ry="12" fill="#E3A02E"/>
+      <circle cx="46" cy="65" r="6" fill="#141312"/><circle cx="74" cy="65" r="6" fill="#141312"/>
+    </svg>
+    <div style="font-weight:700; font-size:24px; line-height:1;">MaoMaoNotify</div>
+    <div style="display:flex; align-items:center; gap:5px; margin-left:2px;">
+      <span style="width:9px;height:9px;border-radius:50%;background:#5c9e6b;display:inline-block;"></span>
+      <span style="font-size:15px;color:#7a746a;">connected</span>
+    </div>
+    <div style="margin-left:auto; display:flex; gap:14px; color:#3a3733;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3a3733" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough)"><path d="M4 5 A8 8 0 1 1 4.5 14"/><path d="M4 4 L4 8 L8 8"/></svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3a3733" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough)"><path d="M9 4 H6 A2 2 0 0 0 4 6 V18 A2 2 0 0 0 6 20 H9"/><path d="M15 8 L19 12 L15 16"/><path d="M19 12 H9"/></svg>
+    </div>
+  </div>
+
+  <!-- voice alerts toggle -->
+  <div class="card" style="display:flex; align-items:center; gap:12px; transform:rotate(-0.5deg);">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#262421" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough)"><path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="#E9B24A" stroke="#262421"/><path d="M16 9 q3 3 0 6"/><path d="M18.5 7 q5 5 0 10"/></svg>
+    <div style="flex:1;">
+      <div style="font-size:18px; font-weight:700;">Voice Alerts Mode</div>
+      <div style="font-size:14px; color:#7a746a;">ON — 背景語音服務執行中</div>
+    </div>
+    <!-- hand-drawn toggle ON -->
+    <div style="width:60px;height:32px;border:2.5px solid #262421;border-radius:20px;background:#E9B24A;display:flex;align-items:center;justify-content:flex-end;padding:0 3px;">
+      <div class="knob"></div>
+    </div>
+  </div>
+
+  <div style="font-size:16px; color:#7a746a; margin-top:2px;">今天</div>
+
+  <!-- text notification -->
+  <div class="card" style="transform:rotate(0.4deg);">
+    <div style="display:flex; align-items:flex-start; gap:12px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#262421" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough)"><path d="M6 9 a6 6 0 0 1 12 0 c0 5 2 6 2 6 H4 s2 -1 2 -6"/><path d="M10 19 a2 2 0 0 0 4 0"/></svg>
+      <div style="flex:1;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="font-weight:700; font-size:18px;">Claude Code</div>
+          <div class="tag" style="margin-left:auto; background:#EFC7C0;">high</div>
+        </div>
+        <div style="font-size:17px; color:#3a3733; margin-top:2px;">部署完成 ✔</div>
+        <div style="font-size:13px; color:#9a9488; margin-top:3px;">2 分鐘前 · Mac</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- voice notification -->
+  <div class="card b" style="transform:rotate(-0.5deg);">
+    <div style="display:flex; align-items:flex-start; gap:12px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#262421" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough)"><path d="M4 9 H8 L13 5 V19 L8 15 H4 Z"/><path d="M16 9 q3 3 0 6"/></svg>
+      <div style="flex:1;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="font-weight:700; font-size:18px;">NAS Monitor</div>
+          <div class="tag" style="margin-left:auto;">voice</div>
+        </div>
+        <div style="font-size:17px; color:#3a3733; margin-top:2px;">NAS 備份完成</div>
+        <!-- waveform doodle -->
+        <svg width="150" height="22" viewBox="0 0 150 22" fill="none" stroke="#c07b1e" stroke-width="2.4" stroke-linecap="round" style="margin-top:6px;" filter="url(#rough)">
+          <path d="M4 11 L12 11 M20 5 L20 17 M28 8 L28 14 M36 2 L36 20 M44 7 L44 15 M52 4 L52 18 M60 9 L60 13 M68 6 L68 16 M76 3 L76 19 M84 8 L84 14 M92 5 L92 17 M100 9 L100 13 M108 6 L108 16 M116 11 L146 11"/>
+        </svg>
+        <div style="font-size:13px; color:#9a9488; margin-top:2px;">🔊 已播放 · 5 分鐘前</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- interactive notification -->
+  <div class="card" style="transform:rotate(0.3deg);">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <div style="font-weight:700; font-size:18px;">部署失敗</div>
+      <div class="tag" style="margin-left:auto; background:#EFC7C0;">critical</div>
+    </div>
+    <div style="font-size:17px; color:#3a3733; margin-top:3px;">deploy_abc_123 掛了，要重試嗎？</div>
+    <div style="display:flex; gap:12px; margin-top:12px;">
+      <div class="btn amber">Retry</div>
+      <div class="btn">Cancel</div>
+    </div>
+  </div>
+
+  <!-- resolved note -->
+  <div style="display:flex; align-items:center; gap:8px; color:#9a9488; font-size:15px; padding-left:6px;">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9a9488" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13 L10 18 L20 6"/></svg>
+    上一則已由 Mac 回覆 · Retry
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Long+Cang&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #c07b1e; } a:hover { color: #965d12; }
+    .paper { font-family:'Kalam','Long Cang','Comic Sans MS',cursive; color:#262421;
+      background-color:#F4EFE3;
+      background-image: radial-gradient(rgba(38,36,33,.07) 1.2px, transparent 1.2px);
+      background-size: 22px 22px; }
+    .sk { border:2.5px solid #262421; background:#FDFBF3;
+      border-radius: 230px 16px 220px 18px / 18px 214px 20px 232px; }
+    .sk2 { border-radius: 16px 226px 18px 220px / 220px 18px 230px 16px; }
+    .nav a { display:block; padding:9px 14px; font-size:18px; color:#262421; text-decoration:none;
+      border-radius: 40px 12px 36px 12px/12px 34px 12px 40px; }
+    .nav a.on { background:#E9B24A; border:2.5px solid #262421; }
+    .btn { border:2.5px solid #262421; border-radius:30px 12px 26px 12px/12px 24px 12px 30px;
+      padding:9px 18px; font-size:18px; font-weight:700; background:#FDFBF3; display:inline-block; }
+    .btn.amber { background:#E9B24A; }
+    .tag { border:2px solid #262421; border-radius:30px 10px 28px 10px/10px 26px 10px 30px;
+      padding:1px 11px; font-size:15px; background:#FDFBF3; }
+    table { width:100%; border-collapse:collapse; }
+    th { text-align:left; font-size:15px; color:#7a746a; font-weight:400; padding:6px 12px; }
+    td { padding:12px; font-size:17px; border-top:2px dashed #d8d0bf; vertical-align:middle; }
+    .mono { font-size:14px; color:#9a9488; }
+  </style>
+</helmet>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="rough"><feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="2" seed="3" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2"/></filter>
+</defs></svg>
+
+<div class="paper" style="width:1200px; height:800px; box-sizing:border-box; padding:26px 30px; display:flex; flex-direction:column; gap:18px;">
+
+  <!-- top bar -->
+  <div style="display:flex; align-items:center; gap:12px;">
+    <svg viewBox="0 0 120 120" width="36" height="36" filter="url(#rough)">
+      <path d="M33 46 L35 15 L60 39 Z" fill="#1C1B1A"/><path d="M87 46 L85 15 L60 39 Z" fill="#1C1B1A"/>
+      <path d="M60 32 C41 32 25 42 25 63 C25 88 40 105 60 105 C80 105 95 88 95 63 C95 42 79 32 60 32 Z" fill="#1C1B1A"/>
+      <ellipse cx="46" cy="64" rx="10" ry="12" fill="#E3A02E"/><ellipse cx="74" cy="64" rx="10" ry="12" fill="#E3A02E"/>
+      <circle cx="46" cy="65" r="6" fill="#141312"/><circle cx="74" cy="65" r="6" fill="#141312"/>
+    </svg>
+    <div style="font-weight:700; font-size:26px;">MaoMaoNotify</div>
+    <div class="tag" style="margin-left:6px;">Web Admin</div>
+    <div style="margin-left:auto; font-size:16px; color:#7a746a;">claude@404nofound.com · admin</div>
+  </div>
+
+  <div style="display:flex; gap:24px; flex:1; min-height:0;">
+    <!-- left nav -->
+    <div class="sk" style="width:220px; padding:16px 12px; display:flex; flex-direction:column; gap:6px; transform:rotate(-0.4deg);">
+      <div class="nav" style="display:flex; flex-direction:column; gap:4px;">
+        <a class="on">Devices</a>
+        <a>Agents</a>
+        <a>Preferences</a>
+        <a>Voice Settings</a>
+        <a>Notifications</a>
+        <a>Server TTS</a>
+        <a>User Management</a>
+      </div>
+      <div style="flex:1;"></div>
+      <a class="nav" style="font-size:16px; color:#9a9488; padding:9px 14px;">Log out</a>
+    </div>
+
+    <!-- main -->
+    <div style="flex:1; display:flex; flex-direction:column; gap:16px; min-width:0;">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <div style="font-weight:700; font-size:28px;">Devices</div>
+        <div class="btn amber" style="margin-left:auto;">＋ 產生配對碼</div>
+      </div>
+
+      <!-- pairing code callout -->
+      <div class="sk2" style="border:2.5px solid #262421; background:#FBF3DC; padding:14px 18px; transform:rotate(0.3deg);">
+        <span style="font-size:17px;">配對碼：</span>
+        <b style="font-size:22px; letter-spacing:4px;">0 2 3 6 4 2 3 5</b>
+        <span class="mono" style="margin-left:14px;">token dev_… · 5 分鐘內有效</span>
+      </div>
+
+      <!-- devices table -->
+      <div class="sk" style="padding:10px 14px 16px; flex:1; transform:rotate(-0.2deg);">
+        <table>
+          <thead><tr><th>名稱</th><th>平台</th><th>最後上線</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td>工作 MacBook<div class="mono">dev_01M2…MAC</div></td>
+              <td><span class="tag">macos</span> arm64</td>
+              <td>剛剛</td>
+              <td><span class="btn" style="padding:5px 12px; font-size:15px;">改名</span></td>
+            </tr>
+            <tr>
+              <td>Galaxy S21<div class="mono">dev_01M2…S21</div></td>
+              <td><span class="tag">android</span></td>
+              <td>2 分鐘前</td>
+              <td><span class="btn" style="padding:5px 12px; font-size:15px;">改名</span></td>
+            </tr>
+            <tr>
+              <td>書房 Linux<div class="mono">dev_01M2…LNX</div></td>
+              <td><span class="tag">linux</span> x64</td>
+              <td>1 小時前</td>
+              <td><span class="btn" style="padding:5px 12px; font-size:15px;">改名</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

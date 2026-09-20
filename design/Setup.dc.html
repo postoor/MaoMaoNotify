@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Long+Cang&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #c07b1e; } a:hover { color: #965d12; }
+    .paper { font-family:'Kalam','Long Cang','Comic Sans MS',cursive; color:#262421;
+      background-color:#F4EFE3;
+      background-image: radial-gradient(rgba(38,36,33,.07) 1.2px, transparent 1.2px);
+      background-size: 20px 20px; }
+    .field { border:2.5px solid #262421; background:#FDFBF3;
+      border-radius: 220px 14px 210px 16px / 16px 210px 16px 224px; padding:9px 14px; }
+    .field.b { border-radius: 14px 222px 16px 214px / 214px 16px 226px 14px; }
+    .lbl { font-size:15px; color:#7a746a; margin:0 0 5px 6px; }
+    .btn { border:2.8px solid #262421; border-radius:34px 14px 30px 14px/14px 28px 14px 34px;
+      padding:12px 0; font-size:20px; font-weight:700; text-align:center; }
+    .ghost { color:#a49c8e; }
+  </style>
+</helmet>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <filter id="rough"><feTurbulence type="turbulence" baseFrequency="0.018" numOctaves="2" seed="9" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter>
+</defs></svg>
+
+<div class="paper" style="width:390px; height:844px; box-sizing:border-box; padding:36px 26px; display:flex; flex-direction:column;">
+
+  <!-- hero cat -->
+  <div style="display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:14px;">
+    <div style="width:132px;height:132px;border:3px solid #262421;border-radius:34px;background:#FDFBF3;display:flex;align-items:center;justify-content:center;transform:rotate(-1.5deg);">
+      <svg viewBox="0 0 120 120" width="98" height="98" filter="url(#rough)">
+        <path d="M33 46 L35 13 L60 39 Z" fill="#1C1B1A"/><path d="M87 46 L85 13 L60 39 Z" fill="#1C1B1A"/>
+        <path d="M40 40 L41 23 L53 37 Z" fill="#B98A86"/><path d="M80 40 L79 23 L67 37 Z" fill="#B98A86"/>
+        <path d="M60 30 C40 30 23 41 23 63 C23 89 39 107 60 107 C81 107 97 89 97 63 C97 41 80 30 60 30 Z" fill="#1C1B1A"/>
+        <g fill="none" stroke="#3a3733" stroke-width="1.6" stroke-linecap="round">
+          <path d="M42 74 L14 71"/><path d="M42 80 L15 84"/><path d="M78 74 L106 71"/><path d="M78 80 L105 84"/>
+        </g>
+        <ellipse cx="46" cy="64" rx="11" ry="13" fill="#E3A02E"/><ellipse cx="74" cy="64" rx="11" ry="13" fill="#E3A02E"/>
+        <circle cx="46" cy="65.5" r="6.6" fill="#141312"/><circle cx="74" cy="65.5" r="6.6" fill="#141312"/>
+        <circle cx="43.4" cy="61" r="2.3" fill="#FFFDF7"/><circle cx="71.4" cy="61" r="2.3" fill="#FFFDF7"/>
+        <path d="M55 82 L65 82 L60 88 Z" fill="#B98A86"/>
+      </svg>
+    </div>
+    <div style="font-weight:700; font-size:30px; margin-top:8px;">MaoMaoNotify</div>
+    <div style="font-size:17px; color:#7a746a;">AI 通知，喵一聲就到 🐾</div>
+  </div>
+
+  <!-- login fields -->
+  <div style="display:flex; flex-direction:column; gap:14px; margin-top:34px;">
+    <div>
+      <div class="lbl">Server URL</div>
+      <div class="field" style="font-size:17px; color:#3a3733;">https://notify.home.lan</div>
+    </div>
+    <div>
+      <div class="lbl">Email</div>
+      <div class="field b" style="font-size:17px; color:#3a3733;">you@home.lan</div>
+    </div>
+    <div>
+      <div class="lbl">Password</div>
+      <div class="field" style="font-size:19px; color:#3a3733; letter-spacing:3px;">••••••••••</div>
+    </div>
+    <div class="btn" style="background:#E9B24A; margin-top:6px;">Log in</div>
+  </div>
+
+  <!-- divider -->
+  <div style="display:flex; align-items:center; gap:12px; margin:26px 4px 18px;">
+    <svg width="90" height="10" viewBox="0 0 90 10" stroke="#c9c1b0" stroke-width="2.4" fill="none" stroke-linecap="round"><path d="M2 6 C20 2 40 8 60 4 C72 2 82 6 88 5"/></svg>
+    <div style="font-size:15px; color:#a49c8e;">接著配對</div>
+    <svg width="90" height="10" viewBox="0 0 90 10" stroke="#c9c1b0" stroke-width="2.4" fill="none" stroke-linecap="round"><path d="M2 5 C8 6 18 2 30 4 C50 8 70 2 88 6"/></svg>
+  </div>
+
+  <!-- pairing -->
+  <div>
+    <div class="lbl">配對碼（8 碼）</div>
+    <div class="field b" style="font-size:24px; letter-spacing:8px; text-align:center; color:#3a3733;">0 2 3 6 4 2 3 5</div>
+  </div>
+  <div class="btn" style="margin-top:14px;">Pair this device</div>
+
+  <div style="flex:1;"></div>
+  <div style="text-align:center; font-size:14px; color:#a49c8e;">在 Web Admin /admin 產生配對碼</div>
+</div>
+</x-dc>
+</body>
+</html>

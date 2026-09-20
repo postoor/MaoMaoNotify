@@ -1,0 +1,1 @@
+"""MaoMaoNotify application package."""

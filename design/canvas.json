@@ -1,0 +1,13 @@
+{
+  "artboards": [
+    { "file": "Icon.dc.html", "x": 0, "y": 0, "w": 720, "h": 560 },
+    { "file": "Setup.dc.html", "x": 800, "y": 0, "w": 390, "h": 844 },
+    { "file": "Main.dc.html", "x": 1270, "y": 0, "w": 390, "h": 844 },
+    { "file": "Admin.dc.html", "x": 0, "y": 964, "w": 1200, "h": 800 }
+  ],
+  "annotations": [
+    { "id": "note-style", "x": 0, "y": -132, "w": 320,
+      "text": "潦草手繪風 · MaoMaoNotify\n墨線 #262421 · 暖紙 #F4EFE3 · 貓眼琥珀 #E3A02E\n手寫字 Kalam / Long Cang，抖動邊框 + SVG 粗糙濾鏡。\nApp Icon · Setup · Home · Web Admin。" }
+  ],
+  "launch": { "view": "canvas" }
+}

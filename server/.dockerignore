@@ -1,0 +1,7 @@
+# Never copy the host virtualenv (its interpreter path is host-specific) or caches.
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
