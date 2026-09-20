@@ -5,13 +5,13 @@ for migrations). target_metadata is wired to the ORM Base once models land in
 app.models.
 """
 
-import os
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config, pool
 
 import app.models  # noqa: F401  (register all models on Base.metadata)
 from alembic import context
+from app.core.config import settings
 from app.db.base import Base
 
 config = context.config
@@ -22,9 +22,8 @@ target_metadata = Base.metadata
 
 
 def _sync_url() -> str:
-    url = os.environ.get("DATABASE_URL", "")
     # Migrations run synchronously; use psycopg (v3) instead of the async driver.
-    return url.replace("+asyncpg", "+psycopg")
+    return settings.database_url.replace("+asyncpg", "+psycopg")
 
 
 def run_migrations_offline() -> None:

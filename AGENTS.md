@@ -296,3 +296,5 @@ Deferred (documented, not bugs):
   then force-stop + `am start`. Drive UI via `uiautomator dump` + `input tap`
   (content-desc holds the widget label). Clean up: uninstall app, adb
   reverse --remove-all, kill the ssh -R.
+- 2026-09-20: Server settings `.env` is repo-rooted; use an absolute path from
+  `server/app/core/config.py` because `cd server` makes `env_file=".env"` miss it.

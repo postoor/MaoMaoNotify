@@ -4,13 +4,13 @@ Phase 1: auth, multi-user, device registry, agent registry. Presence, routing,
 notifications, TTS, and the WebSocket gateway arrive in later phases.
 """
 
-import os
 from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 
 from app.api.router import api_router
+from app.core.config import settings
 from app.core.errors import register_error_handlers
 from app.core.ids import new_id
 from app.core.logging import configure_logging
@@ -39,6 +39,6 @@ async def health() -> dict[str, str]:
 
 # Web Admin (§70) — static SPA served at /admin when present.
 # WEB_ADMIN_DIR overrides the location (set in the production image).
-_WEB_DIR = Path(os.environ.get("WEB_ADMIN_DIR") or (Path(__file__).resolve().parents[2] / "web"))
+_WEB_DIR = Path(settings.web_admin_dir or (Path(__file__).resolve().parents[2] / "web"))
 if (_WEB_DIR / "index.html").exists():
     app.mount("/admin", StaticFiles(directory=str(_WEB_DIR), html=True), name="admin")

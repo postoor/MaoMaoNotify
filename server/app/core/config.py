@@ -1,10 +1,14 @@
 """Application settings, loaded from environment / .env."""
 
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=_PROJECT_ROOT / ".env", extra="ignore")
 
     # Database / cache
     database_url: str = "postgresql+asyncpg://maomao:maomao@localhost:5432/maomao"
@@ -43,6 +47,9 @@ class Settings(BaseSettings):
     kokoro_model: str = "kokoro"
     kokoro_voice: str = "af_sky"
     audio_url_ttl_seconds: int = 3600
+
+    # Web admin static files. Empty means the repository's web/ directory.
+    web_admin_dir: str = ""
 
 
 settings = Settings()
