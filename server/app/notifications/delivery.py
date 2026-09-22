@@ -19,11 +19,14 @@ import httpx
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import settings
 from app.core.logging import get_logger
+from app.models.audio import AudioAsset
 from app.models.device import Device
 from app.models.notification import Notification, NotificationDelivery
 from app.notifications import constants as c
 from app.routing.engine import RoutingPlan
+from app.storage.base import StorageService
 from app.websocket.manager import manager
 
 log = get_logger("delivery")
@@ -41,7 +44,34 @@ def _now() -> datetime:
     return datetime.now(UTC)
 
 
-def ws_payload(n: Notification) -> dict:
+async def signed_voice(
+    voice: dict | None,
+    session: AsyncSession,
+    storage: StorageService | None,
+) -> dict:
+    """Return a copy of ``voice`` with a freshly-signed ``audio_url`` minted from
+    its ``audio_id`` (§35).
+
+    The URL is short-lived (``AUDIO_URL_TTL_SECONDS``) and is never persisted, so
+    every serialization hands the client a currently-valid URL. A no-op when the
+    payload has no audio asset (client_tts / plain text) or no storage is given.
+    """
+    voice = dict(voice or {})
+    audio_id = voice.get("audio_id")
+    if not audio_id or storage is None:
+        return voice
+    asset = await session.get(AudioAsset, audio_id)
+    if asset is None or not asset.storage_key:
+        return voice
+    voice["audio_url"] = await storage.signed_url(
+        asset.storage_key, settings.audio_url_ttl_seconds
+    )
+    return voice
+
+
+async def ws_payload(
+    n: Notification, session: AsyncSession, storage: StorageService | None = None
+) -> dict:
     return {
         "event": "notification",
         "notification": {
@@ -51,13 +81,14 @@ def ws_payload(n: Notification) -> dict:
             "message": n.message,
             "priority": n.priority,
             "presentation": n.presentation,
-            "voice": n.voice,
+            "voice": await signed_voice(n.voice, session, storage),
             "playback": n.playback,
             "actions": n.actions,
             "correlation_id": n.correlation_id,
             "thread_id": n.thread_id,
             "group_key": n.group_key,
             "expires_at": n.expires_at.isoformat() if n.expires_at else None,
+            "created_at": n.created_at.isoformat() if n.created_at else None,
         },
     }
 
@@ -68,7 +99,10 @@ def _mark_sent(delivery: NotificationDelivery) -> None:
 
 
 async def dispatch(
-    session: AsyncSession, notification: Notification, plan: RoutingPlan
+    session: AsyncSession,
+    notification: Notification,
+    plan: RoutingPlan,
+    storage: StorageService | None = None,
 ) -> list[NotificationDelivery]:
     deliveries: list[NotificationDelivery] = []
     for i, dev in enumerate(plan.targets):
@@ -82,7 +116,7 @@ async def dispatch(
         deliveries.append(d)
     await session.flush()
 
-    payload = ws_payload(notification)
+    payload = await ws_payload(notification, session, storage)
     multi = plan.mode in (c.ROUTE_ALL_DEVICES, c.ROUTE_SPECIFIC_DEVICE)
     sent_any = False
 
@@ -143,7 +177,9 @@ async def send_push_wakes(
     return sent
 
 
-async def run_fallback(session: AsyncSession, notification_id: str) -> bool:
+async def run_fallback(
+    session: AsyncSession, notification_id: str, storage: StorageService | None = None
+) -> bool:
     """Escalate if the currently-sent device hasn't acknowledged delivery.
 
     Returns True if a fallback push was made. Intended to run after the plan's
@@ -177,7 +213,7 @@ async def run_fallback(session: AsyncSession, notification_id: str) -> bool:
 
     sent.status = c.DELIVERY_FALLBACK_CANCELLED
     notification = await session.get(Notification, notification_id)
-    await manager.send(nxt.device_id, ws_payload(notification))
+    await manager.send(nxt.device_id, await ws_payload(notification, session, storage))
     _mark_sent(nxt)
     await session.commit()
     return True
@@ -188,8 +224,11 @@ async def _delayed_fallback(
 ) -> None:
     try:
         await asyncio.sleep(delay)
+        from app.storage.deps import get_storage
+
+        storage = await get_storage()
         async with session_factory() as session:
-            await run_fallback(session, notification_id)
+            await run_fallback(session, notification_id, storage)
     except Exception:  # noqa: BLE001 — a fallback timer must never crash the loop
         log.warning("fallback timer failed", extra={"notification_id": notification_id})
 

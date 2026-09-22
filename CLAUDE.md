@@ -211,6 +211,17 @@ Deferred (documented, not bugs):
   networking + notify/TTS are verified); macOS/Android builds pending.
 
 ## Lessons
+- 2026-09-22: server_tts/agent audio replay silent = `voice.audio_url` was a
+  presigned URL with AUDIO_URL_TTL_SECONDS (default 3600s) baked into the DB and
+  re-served verbatim, so any play after ~1h (delayed/offline delivery, or replay)
+  hit an expired URL → 403 → no sound. Fix (server): stop storing audio_url;
+  store only audio_id and mint a fresh signed URL at *serialization* time —
+  `delivery.signed_voice(voice, session, storage)` is called by `ws_payload`
+  (dispatch + run_fallback pass storage) and by the REST read endpoints
+  (`_to_out` in api/notifications.py). ws_payload is now async. Fix (client):
+  `app_state.playVoice` also re-mints via GET /api/v1/audio/{audio_id} before
+  playing (belt-and-braces), surfaces play errors, shows a received-time column;
+  ws_payload also carries created_at now.
 - 2026-09-16: Android — voice not playing over http = cleartext. Dart http/WS
   (dart:io) bypass Android's cleartext policy, but native MediaPlayer does NOT →
   http:// audio blocked on release/targetSdk≥28. Fix: `usesCleartextTraffic="true"`

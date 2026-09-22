@@ -128,7 +128,7 @@ async def create_notification(
         .all()
     )
     plan = plan_routes(mode, body.priority, ordered_active, all_devices, specific_device)
-    await dispatch(session, notification, plan)
+    await dispatch(session, notification, plan, synth.storage if synth else None)
 
     # ACK-timeout fallback (§53): if delivered to one device but more remain,
     # escalate to the next after the plan's timeout.

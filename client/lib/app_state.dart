@@ -15,6 +15,14 @@ import 'settings/settings_store.dart';
 import 'tts/speaker.dart';
 import 'websocket/ws_client.dart';
 
+/// Outcome of a voice-playback attempt. [message] is a human-readable reason
+/// on failure, surfaced to the user when they tap "play".
+class PlayResult {
+  const PlayResult(this.ok, [this.message]);
+  final bool ok;
+  final String? message;
+}
+
 /// Coordinates auth, pairing, presence, WebSocket delivery, and presentation
 /// (notification popup + client TTS) across desktop and Android (Phase 3–4).
 class AppState extends ChangeNotifier {
@@ -147,17 +155,50 @@ class AppState extends ChangeNotifier {
       _ws?.ack(n.id, status: 'displayed');
     }
     if (n.isVoice) {
-      final url = n.voice['audio_url'] as String?;
-      if (url != null && url.isNotEmpty) {
-        // server_tts / agent_audio: download + play the audio asset.
-        if (await audioPlayer.play(url)) _ws?.ack(n.id, status: 'played');
-      } else if (n.voice['source'] == 'client_tts') {
-        final spoken =
-            await speaker.speak(n.message ?? '', language: n.voice['language'] as String?);
-        if (spoken) _ws?.ack(n.id, status: 'played');
-      }
+      await playVoice(n);
     }
     notifyListeners();
+  }
+
+  /// Play a notification's voice: an audio asset (server-TTS / agent audio) or
+  /// client-side TTS. Used both for auto-play on delivery and for manual replay
+  /// from the UI. Acks 'played' on success and returns a [PlayResult] so the UI
+  /// can report why nothing was heard.
+  ///
+  /// For audio assets we mint a *fresh* signed URL via the audio_id (the URL
+  /// captured on the notification is short-lived and may have expired, §35),
+  /// falling back to the stored URL if that fetch fails.
+  Future<PlayResult> playVoice(AppNotification n) async {
+    final audioId = n.audioId;
+    final hasAsset = (audioId?.isNotEmpty ?? false) || (n.audioUrl?.isNotEmpty ?? false);
+    if (hasAsset) {
+      String? url;
+      if (audioId != null && audioId.isNotEmpty) {
+        try {
+          url = await _withAuth((access) => api.getAudioUrl(access, audioId));
+        } catch (_) {
+          url = n.audioUrl; // fall back to the (possibly expired) stored URL
+        }
+      } else {
+        url = n.audioUrl;
+      }
+      if (url == null || url.isEmpty) return const PlayResult(false, 'No audio URL available.');
+      if (await audioPlayer.play(url)) {
+        _ws?.ack(n.id, status: 'played');
+        return const PlayResult(true);
+      }
+      return const PlayResult(false, 'Could not download or play the audio.');
+    }
+    if (n.isClientTts) {
+      final spoken =
+          await speaker.speak(n.message ?? '', language: n.voice['language'] as String?);
+      if (spoken) {
+        _ws?.ack(n.id, status: 'played');
+        return const PlayResult(true);
+      }
+      return const PlayResult(false, 'Text-to-speech is unavailable on this device.');
+    }
+    return const PlayResult(false, 'This notification has no voice.');
   }
 
   /// Register this device's UnifiedPush endpoint with the server (§56 alt).

@@ -105,6 +105,15 @@ class ApiClient {
     return list.map((e) => AppNotification.fromJson(e as Map<String, dynamic>)).toList();
   }
 
+  /// Mint a fresh short-lived signed download URL for an audio asset (§35).
+  /// The URL stored on a notification expires (AUDIO_URL_TTL_SECONDS), so
+  /// (re)playing goes through here to get a currently-valid URL.
+  Future<String> getAudioUrl(String accessToken, String audioId) async {
+    final resp = await _http.get(_uri('/audio/$audioId'), headers: _headers(bearer: accessToken));
+    final j = _decode(resp) as Map<String, dynamic>;
+    return j['url'] as String;
+  }
+
   Future<void> markRead(String accessToken, String notificationId) async {
     final resp = await _http.post(_uri('/notifications/$notificationId/read'),
         headers: _headers(bearer: accessToken));

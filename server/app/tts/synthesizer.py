@@ -1,9 +1,11 @@
 """Server-TTS synthesis for notifications (§27, §30).
 
 Synthesizes voice notifications, stores the audio asset, and attaches
-``audio_id`` / ``audio_url`` to the notification's ``voice`` payload. On provider
-failure it falls back to ``client_tts`` (if configured) so the notification is
-never blocked by a TTS failure (§30).
+``audio_id`` to the notification's ``voice`` payload. The signed ``audio_url`` is
+minted fresh at serialization time (see ``delivery.signed_voice``), never stored,
+so a delivered URL can never already be expired (§35). On provider failure it
+falls back to ``client_tts`` (if configured) so the notification is never blocked
+by a TTS failure (§30).
 """
 
 from collections.abc import Callable
@@ -68,8 +70,9 @@ class VoiceSynthesizer:
         key = f"audio/{asset.id}.{result.extension}"
         asset.storage_key = key
         await self.storage.put(key, result.audio, result.content_type)
-        url = await self.storage.signed_url(key, self.settings.audio_url_ttl_seconds)
-        notification.voice = {**voice, "audio_id": asset.id, "audio_url": url}
+        # Store only the audio_id — the signed audio_url is minted fresh at
+        # serialization time (§35), so it can never be delivered already expired.
+        notification.voice = {**voice, "audio_id": asset.id}
 
     async def attach_agent_audio(self, session: AsyncSession, notification: Notification) -> None:
         """Resolve an agent-uploaded audio_id → attach a signed download URL (§34)."""
@@ -84,5 +87,6 @@ class VoiceSynthesizer:
         if size is None:
             raise APIError("invalid_request", "audio has not been uploaded yet.", 400)
         asset.size = size
-        url = await self.storage.signed_url(asset.storage_key, self.settings.audio_url_ttl_seconds)
-        notification.voice = {**voice, "audio_url": url}
+        # Keep only audio_id on the notification; the signed audio_url is minted
+        # fresh at serialization time (§35).
+        notification.voice = {**voice, "audio_id": audio_id}

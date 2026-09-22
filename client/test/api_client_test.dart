@@ -71,6 +71,21 @@ void main() {
     expect(list.single.id, 'msg_1');
   });
 
+  test('getAudioUrl fetches a fresh signed URL by audio_id', () async {
+    var path = '';
+    var auth = '';
+    final mock = MockClient((req) async {
+      path = req.url.path;
+      auth = req.headers['authorization'] ?? '';
+      return _json({'id': 'aud_1', 'url': 'http://minio/aud_1?sig=fresh', 'content_type': 'audio/mpeg'}, 200);
+    });
+    final api = ApiClient(baseUrl: 'http://x', client: mock);
+    final url = await api.getAudioUrl('access', 'aud_1');
+    expect(path, '/api/v1/audio/aud_1');
+    expect(auth, 'Bearer access');
+    expect(url, 'http://minio/aud_1?sig=fresh');
+  });
+
   test('reportPresence sends bearer + observation body', () async {
     var authHeader = '';
     final mock = MockClient((req) async {

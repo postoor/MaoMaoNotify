@@ -1,4 +1,6 @@
 import 'package:maomao_client/android/native_bridge.dart';
+import 'package:maomao_client/audio/audio_player.dart';
+import 'package:maomao_client/tts/speaker.dart';
 
 /// A fake CommandRunner returning canned output per executable.
 class FakeRunner {
@@ -41,4 +43,30 @@ class FakeBridge implements NativeBridge {
 
   @override
   Future<void> stopVoiceAlerts() async => calls.add('stop');
+}
+
+/// Records the URLs it was asked to play; [result] controls success.
+class FakeAudioPlayer implements AudioPlayer {
+  FakeAudioPlayer({this.result = true});
+  bool result;
+  final List<String> played = [];
+
+  @override
+  Future<bool> play(String url) async {
+    played.add(url);
+    return result;
+  }
+}
+
+/// Records spoken text; [result] controls success.
+class FakeSpeaker implements Speaker {
+  FakeSpeaker({this.result = true});
+  bool result;
+  final List<String> spoken = [];
+
+  @override
+  Future<bool> speak(String text, {String? language}) async {
+    spoken.add(text);
+    return result;
+  }
 }

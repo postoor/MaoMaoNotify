@@ -47,7 +47,8 @@ async def test_synthesizes_stores_and_attaches(sessionmaker, create_user):
         await synth.apply(s, n, "部署完成")
 
         assert n.voice["audio_id"].startswith("audio_")
-        assert n.voice["audio_url"].startswith("memory://")
+        # audio_url is minted fresh at serialization time, never stored (§35).
+        assert "audio_url" not in n.voice
         asset = await s.get(AudioAsset, n.voice["audio_id"])
         assert asset.source == "server_tts"
         assert asset.content_type == "audio/mpeg"

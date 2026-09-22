@@ -43,6 +43,37 @@ void main() {
     expect(n.correlationId, 'deploy_1');
   });
 
+  test('AppNotification parses created_at and exposes voice helpers', () {
+    final n = AppNotification.fromJson({
+      'id': 'msg_3',
+      'type': 'voice',
+      'message': '部署完成',
+      'voice': {'source': 'server_tts', 'audio_id': 'aud_1', 'audio_url': 'http://m/aud_1?sig=x'},
+      'created_at': '2026-09-22T03:04:05Z',
+    });
+    expect(n.createdAt, DateTime.utc(2026, 9, 22, 3, 4, 5));
+    expect(n.audioId, 'aud_1');
+    expect(n.audioUrl, 'http://m/aud_1?sig=x');
+    expect(n.hasPlayableVoice, isTrue);
+    expect(n.isClientTts, isFalse);
+  });
+
+  test('client_tts voice is playable without an audio asset', () {
+    final n = AppNotification.fromJson({
+      'id': 'msg_4', 'type': 'voice', 'message': 'hi',
+      'voice': {'source': 'client_tts', 'language': 'zh-TW'},
+    });
+    expect(n.hasPlayableVoice, isTrue);
+    expect(n.isClientTts, isTrue);
+    expect(n.audioId, isNull);
+  });
+
+  test('a plain text notification has no playable voice', () {
+    final n = AppNotification.fromJson({'id': 'msg_5', 'type': 'text', 'message': 'hi'});
+    expect(n.hasPlayableVoice, isFalse);
+    expect(n.createdAt, isNull);
+  });
+
   test('AppNotification defaults are safe', () {
     final n = AppNotification.fromJson({'id': 'msg_2'});
     expect(n.type, 'text');

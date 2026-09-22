@@ -16,6 +16,7 @@ class AppNotification {
     this.groupKey,
     this.expiresAt,
     this.readAt,
+    this.createdAt,
   });
 
   final String id;
@@ -33,9 +34,32 @@ class AppNotification {
   final DateTime? expiresAt;
   final DateTime? readAt;
 
+  /// When the server created the notification (§62). Used to show the user when
+  /// a notification was received. May be absent on WS payloads from an older
+  /// server; the REST list always carries it.
+  final DateTime? createdAt;
+
   bool get isVoice => type == 'voice';
   bool get isSilent => presentation == 'silent';
   bool get isRead => readAt != null;
+
+  /// The stored server-TTS / agent audio asset id, if any. Preferred over
+  /// [audioUrl] for playback because it lets the client mint a fresh signed URL
+  /// (the stored [audioUrl] is short-lived and may have expired — §35).
+  String? get audioId => voice['audio_id'] as String?;
+
+  /// The (possibly expired) signed download URL captured at create time.
+  String? get audioUrl => voice['audio_url'] as String?;
+
+  bool get isClientTts => voice['source'] == 'client_tts';
+
+  /// True when this notification has voice the client can play (a downloadable
+  /// audio asset or client-side TTS).
+  bool get hasPlayableVoice =>
+      isVoice &&
+      ((audioId?.isNotEmpty ?? false) ||
+          (audioUrl?.isNotEmpty ?? false) ||
+          isClientTts);
 
   factory AppNotification.fromJson(Map<String, dynamic> j) => AppNotification(
         id: j['id'] as String,
@@ -54,5 +78,8 @@ class AppNotification {
             ? DateTime.tryParse(j['expires_at'] as String)
             : null,
         readAt: j['read_at'] != null ? DateTime.tryParse(j['read_at'] as String) : null,
+        createdAt: j['created_at'] != null
+            ? DateTime.tryParse(j['created_at'] as String)
+            : null,
       );
 }

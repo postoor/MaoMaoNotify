@@ -67,6 +67,15 @@ void unawaitedSafe(Future<void> f) {
   f.catchError((_) {});
 }
 
+/// Format a notification's received time in the device's local timezone as
+/// `YYYY-MM-DD HH:mm`. Returns '' when the timestamp is unknown.
+String formatReceivedAt(DateTime? dt) {
+  if (dt == null) return '';
+  final t = dt.toLocal();
+  String two(int v) => v.toString().padLeft(2, '0');
+  return '${t.year}-${two(t.month)}-${two(t.day)} ${two(t.hour)}:${two(t.minute)}';
+}
+
 class MaoMaoApp extends StatelessWidget {
   const MaoMaoApp(this.state, this.voiceAlerts, {super.key});
   final AppState state;
@@ -243,9 +252,22 @@ class _NotificationTile extends StatefulWidget {
 
 class _NotificationTileState extends State<_NotificationTile> {
   final Map<String, TextEditingController> _controllers = {};
+  bool _playing = false;
 
   AppState get state => widget.state;
   AppNotification get n => widget.n;
+
+  Future<void> _play() async {
+    setState(() => _playing = true);
+    final result = await state.playVoice(n);
+    if (!mounted) return;
+    setState(() => _playing = false);
+    if (!result.ok) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message ?? 'Playback failed')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -259,8 +281,44 @@ class _NotificationTileState extends State<_NotificationTile> {
             contentPadding: EdgeInsets.zero,
             leading: Icon(n.isVoice ? Icons.record_voice_over : Icons.notifications),
             title: Text(n.title ?? '(no title)'),
-            subtitle: Text(n.message ?? ''),
-            trailing: Text(n.priority),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if ((n.message ?? '').isNotEmpty) Text(n.message!),
+                if (n.createdAt != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      formatReceivedAt(n.createdAt),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: Colors.grey),
+                    ),
+                  ),
+              ],
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(n.priority),
+                if (n.hasPlayableVoice)
+                  _playing
+                      ? const Padding(
+                          padding: EdgeInsets.all(12),
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        )
+                      : IconButton(
+                          icon: const Icon(Icons.play_circle_fill),
+                          tooltip: 'Play voice',
+                          onPressed: _play,
+                        ),
+              ],
+            ),
           ),
           if (n.actions.isNotEmpty)
             Wrap(

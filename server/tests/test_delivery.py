@@ -74,6 +74,34 @@ async def test_dispatch_to_online_device(sessionmaker, redis):
     assert len(ws.sent) == 1
     assert ws.sent[0]["event"] == "notification"
     assert ws.sent[0]["notification"]["id"] == n.id
+    # created_at is included so the client can show when it was received (§62).
+    assert ws.sent[0]["notification"]["created_at"] is not None
+
+
+async def test_signed_voice_mints_fresh_url_from_audio_id(sessionmaker):
+    from app.models.audio import AudioAsset
+    from app.notifications.delivery import signed_voice
+    from app.storage.memory import InMemoryStorage
+
+    user_id = await _mk_user(sessionmaker)
+    storage = InMemoryStorage()
+    async with sessionmaker() as s:
+        asset = AudioAsset(
+            user_id=user_id, source="server_tts", content_type="audio/mpeg",
+            size=3, storage_key="audio/x.mp3",
+        )
+        s.add(asset)
+        await s.commit()
+
+        # audio_id → a freshly-signed URL is attached
+        voice = await signed_voice({"source": "server_tts", "audio_id": asset.id}, s, storage)
+        assert voice["audio_url"].startswith("memory://audio/x.mp3")
+
+        # no audio asset (client_tts) → unchanged
+        assert await signed_voice({"source": "client_tts"}, s, storage) == {"source": "client_tts"}
+
+        # no storage → no URL minted
+        assert "audio_url" not in await signed_voice({"audio_id": asset.id}, s, None)
 
 
 async def test_offline_device_stays_routed(sessionmaker, redis):

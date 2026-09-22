@@ -15,7 +15,7 @@ from app.db.redis import get_redis
 from app.models.device import Device
 from app.models.notification import Notification
 from app.models.user import User
-from app.notifications.delivery import mark_read
+from app.notifications.delivery import mark_read, signed_voice
 from app.notifications.responses import handle_response
 from app.notifications.schemas import (
     NotificationCreate,
@@ -55,11 +55,23 @@ async def create(
     )
 
 
+async def _to_out(
+    n: Notification, session: AsyncSession, storage: StorageService
+) -> NotificationOut:
+    """Serialize a notification, minting a fresh signed audio_url (§35)."""
+    out = NotificationOut.model_validate(n)
+    out.voice = await signed_voice(n.voice, session, storage)
+    return out
+
+
 @router.get("", response_model=list[NotificationOut])
 async def list_all(
-    user: User = Depends(get_current_user), session: AsyncSession = Depends(get_session)
+    user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+    storage: StorageService = Depends(get_storage),
 ):
-    return await list_notifications(session, user.id)
+    notifications = await list_notifications(session, user.id)
+    return [await _to_out(n, session, storage) for n in notifications]
 
 
 @router.get("/{notification_id}", response_model=NotificationOut)
@@ -67,8 +79,9 @@ async def get_one(
     notification_id: str,
     user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
+    storage: StorageService = Depends(get_storage),
 ):
-    return await get_notification(session, user.id, notification_id)
+    return await _to_out(await get_notification(session, user.id, notification_id), session, storage)
 
 
 class ResponseIn(BaseModel):
